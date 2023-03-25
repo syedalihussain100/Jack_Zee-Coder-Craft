@@ -282,10 +282,8 @@ const uploadProfileImage = async (req, res) => {
     await userModel.findByIdAndUpdate(
       _id,
       { profilePhoto: imgUpload?.url },
-      { new: true,runValidators:true }
+      { new: true, runValidators: true }
     );
-
-
 
     res.status(200).send({
       message: "Your Profile Picture has been Updated",
@@ -474,13 +472,13 @@ const VerifyEmail = async (req, res) => {
     const token = await verificationModel.findOne({ owner: user._id });
 
     if (!token) {
-      res.status(400).send("Sorry, user not found!");
+      return res.status(400).send("Sorry, user not found!");
     }
 
     const isMatched = await token.compareToken(otp);
 
     if (!isMatched) {
-      res.status(400).send("Please Provide a Valid Token!");
+      return res.status(400).send("Please Provide a Valid Token!");
     }
 
     user.verified = true;
@@ -498,8 +496,6 @@ const VerifyEmail = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
-
-
 
 module.exports = {
   registerUser,
