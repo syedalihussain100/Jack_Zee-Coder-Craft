@@ -29,7 +29,7 @@ const multerFilter = (req, file, cb) => {
     limits: { fileSize: 1000000 },
   });
   
-  //   Image Resizing
+  //  Profile Image Resizing
   
   const profilePhotoResize = async (req, res, next) => {
     // check if there is no file
@@ -45,6 +45,23 @@ const multerFilter = (req, file, cb) => {
   
     next();
   };
+
+  // organization
+
+  const organizationPhotoResize = async (req,res,next) =>{
+     // check if there is no file
+     if (!req.file) return next();
+  
+     req.file.filename = `user-${Date.now()}-${req.file.originalname}`;
+   
+     await sharp(req.file.buffer)
+       .resize(250, 250)
+       .toFormat("jpeg")
+       .jpeg({ quality: 90 })
+       .toFile(path.join(`public/images/organization/${req.file.filename}`));
+   
+     next();
+  }
   
 
-module.exports = { profilePhotoUpload, profilePhotoResize };
+module.exports = { profilePhotoUpload, profilePhotoResize,organizationPhotoResize };

@@ -67,7 +67,7 @@ const sendOTTp = async (email, ottp) => {
     });
 
     const mailOptions = {
-      from: "emailverification@email.com",
+      from: "jackdelivery121@gmail.com",
       to: email,
       subject: "Verify Your Email",
       html: "<h1>" + ottp + "</h1>",
@@ -102,7 +102,7 @@ const verifiedEmail = async (email) => {
     });
 
     const mailOptions = {
-      from: "emailverification@email.com",
+      from: "jackdelivery121@gmail.com",
       to: email,
       subject: "Verify your email account",
       html: "Email Verified Successfully Thanks for Connecting with us",
@@ -115,7 +115,9 @@ const verifiedEmail = async (email) => {
         console.log("Mail has been sent: ", info.response);
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    res.status(400).send({ success: false, error: error.message });
+  }
 };
 
 const securePassword = async (password) => {
@@ -465,9 +467,9 @@ const VerifyEmail = async (req, res) => {
       return res.status(400).send("Sorry, user not found!");
     }
 
-    if (user.verified) {
-      return res.status(400).send("This account is already verified!");
-    }
+      if (user.verified) {
+        return res.status(400).send("This account is already verified!");
+      }
 
     const token = await verificationModel.findOne({ owner: user._id });
 

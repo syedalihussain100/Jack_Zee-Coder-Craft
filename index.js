@@ -27,8 +27,11 @@ cloudniary.v2.config({
 // routes
 
 const user_Route = require("./routes/userRoute");
+const organization_Route = require("./routes/organizationRoute");
 
 app.use(`/api`, user_Route);
+app.use(`/api`,organization_Route);
+
 
 app.get(`/`,(req,res)=>{
   res.status(200).send("Hello Jack Delivery");
