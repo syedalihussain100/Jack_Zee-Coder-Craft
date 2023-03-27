@@ -61,7 +61,7 @@ const ordersAll = async (req, res) => {
         "verified",
       ]);
 
-    if (!ordersAll) {
+    if (!ordersall) {
       return res.status(400).send("Something Error");
     }
 
@@ -76,7 +76,7 @@ const ordersAll = async (req, res) => {
 const orderDetails = async (req, res) => {
   try {
     const { id } = req.params;
-    const orderDetails = await orderModel
+    const orderDetail = await orderModel
       .findById(id)
       .populate("organization_User", [
         "profilePhoto",
@@ -93,11 +93,11 @@ const orderDetails = async (req, res) => {
         "verified",
       ])
 
-    if (!orderDetails) {
+    if (!orderDetail) {
       return res.status(400).send("Something Error");
     }
 
-    res.status(200).send(orderDetails);
+    res.status(200).send(orderDetail);
   } catch (error) {
     res.status(500).send(error?.message);
   }
