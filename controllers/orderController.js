@@ -91,7 +91,7 @@ const orderDetails = async (req, res) => {
         "profilePhoto",
         "mobile",
         "verified",
-      ]);
+      ])
 
     if (!orderDetails) {
       return res.status(400).send("Something Error");
