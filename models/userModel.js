@@ -6,6 +6,10 @@ const user = mongoose.Schema({
     type: String,
     required: true,
   },
+  vehiclenumberplate: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -38,9 +42,7 @@ const user = mongoose.Schema({
     default: false,
     required: true,
   },
-
 });
-
 
 // reset password
 

@@ -59,6 +59,7 @@ const ordersAll = async (req, res) => {
         "profilePhoto",
         "mobile",
         "verified",
+        "vehiclenumberplate"
       ]);
 
     if (!ordersall) {
@@ -90,7 +91,7 @@ const orderDetails = async (req, res) => {
         "email",
         "profilePhoto",
         "mobile",
-        "verified",
+        "verified"
       ])
 
     if (!orderDetail) {

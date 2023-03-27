@@ -140,6 +140,7 @@ const registerUser = async (req, res) => {
       email: req.body.email,
       password: spassword,
       mobile: req.body.mobile,
+      vehiclenumberplate: req.body.vehiclenumberplate,
     });
 
     const OTP = generateOTP();
@@ -467,9 +468,9 @@ const VerifyEmail = async (req, res) => {
       return res.status(400).send("Sorry, user not found!");
     }
 
-      if (user.verified) {
-        return res.status(400).send("This account is already verified!");
-      }
+    if (user.verified) {
+      return res.status(400).send("This account is already verified!");
+    }
 
     const token = await verificationModel.findOne({ owner: user._id });
 
