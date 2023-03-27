@@ -28,9 +28,11 @@ cloudniary.v2.config({
 
 const user_Route = require("./routes/userRoute");
 const organization_Route = require("./routes/organizationRoute");
+const order_Route = require("./routes/orderRoute");
 
 app.use(`/api`, user_Route);
 app.use(`/api`,organization_Route);
+app.use(`/api`,order_Route);
 
 
 app.get(`/`,(req,res)=>{
