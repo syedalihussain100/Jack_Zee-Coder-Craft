@@ -11,7 +11,7 @@ const orderCreate = async (req, res) => {
       address,
       nearest_landmark,
       order_details,
-      payment_status,
+      Orderstatus,
     } = req.body;
 
     let data = await orderModel({
@@ -22,7 +22,7 @@ const orderCreate = async (req, res) => {
       address: address,
       nearest_landmark: nearest_landmark,
       order_details: order_details,
-      payment_status: payment_status,
+      Orderstatus: Orderstatus,
     });
 
     if (!data) {
@@ -52,7 +52,14 @@ const ordersAll = async (req, res) => {
         "crNumber",
         "email",
         "mobile",
-      ]).populate("rider",["name","email","profilePhoto","mobile","verified"]);
+      ])
+      .populate("rider", [
+        "name",
+        "email",
+        "profilePhoto",
+        "mobile",
+        "verified",
+      ]);
 
     if (!ordersAll) {
       return res.status(400).send("Something Error");
@@ -77,6 +84,13 @@ const orderDetails = async (req, res) => {
         "crNumber",
         "email",
         "mobile",
+      ])
+      .populate("rider", [
+        "name",
+        "email",
+        "profilePhoto",
+        "mobile",
+        "verified",
       ]);
 
     if (!orderDetails) {

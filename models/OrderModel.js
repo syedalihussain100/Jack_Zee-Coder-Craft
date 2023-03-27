@@ -40,7 +40,7 @@ const Order = mongoose.Schema({
     trim: true,
   },
 
-  payment_status: {
+  Orderstatus: {
     type: String,
     default: "Pending",
   },
