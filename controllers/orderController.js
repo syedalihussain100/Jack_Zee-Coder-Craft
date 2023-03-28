@@ -12,6 +12,7 @@ const orderCreate = async (req, res) => {
       nearest_landmark,
       order_details,
       Orderstatus,
+      PaymentStatus
     } = req.body;
 
     let data = await orderModel({
@@ -23,6 +24,7 @@ const orderCreate = async (req, res) => {
       nearest_landmark: nearest_landmark,
       order_details: order_details,
       Orderstatus: Orderstatus,
+      PaymentStatus: PaymentStatus
     });
 
     if (!data) {
@@ -36,6 +38,7 @@ const orderCreate = async (req, res) => {
       message: "Your Order has been Completed",
       result: result,
     });
+    
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -58,7 +61,6 @@ const ordersAll = async (req, res) => {
         "email",
         "profilePhoto",
         "mobile",
-        "verified",
         "vehiclenumberplate"
       ]);
 

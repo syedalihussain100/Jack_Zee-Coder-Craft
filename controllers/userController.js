@@ -9,46 +9,10 @@ const { generateOTP } = require("../utils/Mail");
 const { verificationModel } = require("../models/verificationToken");
 const { isValidObjectId } = require("mongoose");
 const CloudUploadImage = require("../utils/CloudniaryCloud/Cloudinary");
-const fs = require("fs");
+
 const sendEmail = require("../utils/sendEmail");
-const crypto = require("crypto");
+// const crypto = require("crypto");
 
-// nodemailer
-
-// const sendResetPasswordMail = async (name, email, token,req) => {
-//   try {
-//     const transporter = nodemailer.createTransport({
-//       host: "smtp.gmail.com",
-//       port: 587,
-//       secure: false,
-//       requireTLS: true,
-//       service: "Gmail",
-//       auth: {
-//         user: process.env.user,
-//         pass: process.env.pass,
-//       },
-//     });
-
-//     const mailOptions = {
-//       from: process.env.user,
-//       to: email,
-//       subject: "For Reset Password",
-//       html: `<p>Hii ${name}, please copy the link <a href=${
-//         req.protocol
-//       }://${req.get("host")}/api/reset-password?token=${token}>and reset your password</a></p>`,
-//     };
-
-//     transporter.sendMail(mailOptions, function (err, info) {
-//       if (err) {
-//         console.log(err.message);
-//       } else {
-//         console.log("Mail has been sent: ", info.response);
-//       }
-//     });
-//   } catch (error) {
-//    console.log(error.message)
-//   }
-// };
 
 // ottp
 
@@ -181,20 +145,7 @@ const loginUser = async (req, res) => {
       expiresIn: "1d",
     });
 
-    let oldTokens = userData.tokens || [];
-
-    if (oldTokens.length) {
-      oldTokens = oldTokens.filter((t) => {
-        const timeDiff = (Date.now() - parseInt(t.signedAt)) / 1000;
-        if (timeDiff < 86400) {
-          return t;
-        }
-      });
-    }
-
-    await userModel.findByIdAndUpdate(userData._id, {
-      tokens: [...oldTokens, { token, signedAt: Date.now().toString() }],
-    });
+ 
 
     if (userData) {
       const passwordMatch = await bcrypt.compare(password, userData?.password);
@@ -421,33 +372,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// signout
 
-const signOut = async (req, res) => {
-  // const token = authHeader && authHeader.split(" ")[1];
-
-  if (req.headers && req.headers.authorization) {
-    const token = req.headers.authorization.split(" ")[1];
-
-    if (!token) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Authorization fail!" });
-    }
-
-    const tokens = req.user.tokens;
-
-    const newTokens = tokens.filter((t) => t.token !== token);
-
-    await userModel.findByIdAndUpdate(
-      req.user._id,
-      { tokens: newTokens },
-      { new: true }
-    );
-
-    res.status(200).send({ success: true, message: "Logout Successfully!" });
-  }
-};
 
 // Verify Email
 
@@ -509,7 +434,6 @@ module.exports = {
   forgetPassword,
   resetPassword,
   profileUpdate,
-  signOut,
   VerifyEmail,
   uploadProfileImage,
 };

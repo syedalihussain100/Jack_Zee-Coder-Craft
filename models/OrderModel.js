@@ -39,6 +39,10 @@ const Order = mongoose.Schema({
     required: [true, "Please Order Details is Required!"],
     trim: true,
   },
+  PaymentStatus: {
+    type: String,
+    default: "Pending"
+  },
 
   Orderstatus: {
     type: String,
