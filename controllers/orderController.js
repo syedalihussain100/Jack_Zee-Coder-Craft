@@ -93,9 +93,33 @@ const orderDetails = async (req, res) => {
   }
 };
 
+// order  status 
+const orderStatus = async (req,res) =>{
+  try {
+    const {id} = req.params;
+
+    const newuserData = {
+      Orderstatus: req.body.Orderstatus,
+    };
+    const orderStatus  = await orderModel.findByIdAndUpdate(id,newuserData,{
+      new: true,
+      runValidators: true
+    })
+
+    res.status(200).json({
+      success:true,
+      message: "Your Order Status has been Updated",
+      orderStatus
+    })
+  } catch (error) {
+    res.status(500).send(error?.message);
+  }
+}
+
 // exports
 module.exports = {
   orderCreate,
   orderDetails,
   ordersAll,
+  orderStatus
 };

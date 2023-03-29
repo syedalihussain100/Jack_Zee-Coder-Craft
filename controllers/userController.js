@@ -428,15 +428,7 @@ const VerifyEmail = async (req, res) => {
 };
 
 
-// rider order status delivery to pending
 
-const RiderOrder = async (req,res) =>{
-  try {
-    
-  } catch (error) {
-    res.status(500).send(error?.message);
-  }
-}
 
 module.exports = {
   registerUser,
