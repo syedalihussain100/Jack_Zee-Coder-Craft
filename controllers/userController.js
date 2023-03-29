@@ -100,11 +100,13 @@ const registerUser = async (req, res) => {
     const spassword = await securePassword(req.body.password);
 
     const user = new userModel({
-      name: req.body.name,
+      riderName: req.body.riderName,
+      organizationName:req.body.organizationName,
       email: req.body.email,
       password: spassword,
       mobile: req.body.mobile,
       vehiclenumberplate: req.body.vehiclenumberplate,
+      crNumber:req.body.crNumber
     });
 
     const OTP = generateOTP();
@@ -424,6 +426,17 @@ const VerifyEmail = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
+
+// rider order status delivery to pending
+
+const RiderOrder = async (req,res) =>{
+  try {
+    
+  } catch (error) {
+    res.status(500).send(error?.message);
+  }
+}
 
 module.exports = {
   registerUser,

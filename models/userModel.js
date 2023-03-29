@@ -2,13 +2,27 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 
 const user = mongoose.Schema({
-  name: {
+  riderName: {
     type: String,
-    required: true,
+    trim: true,
+    default: "",
   },
+  organizationName: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+
+  crNumber: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+
   vehiclenumberplate: {
     type: String,
-    required: true,
+    trim: true,
+    default: "",
   },
   email: {
     type: String,
@@ -24,7 +38,6 @@ const user = mongoose.Schema({
     default:
       "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
   },
-
 
   mobile: {
     type: String,

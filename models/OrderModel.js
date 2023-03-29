@@ -1,16 +1,15 @@
 const mongoose = require("mongoose");
 
 const Order = mongoose.Schema({
-  rider: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: [true, "Please User Author is required!"],
+  roname:{
+  type:[
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"User"
+    },   
+  ]
   },
-  organization_User: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Organization",
-    required: [true, "Please Organization Author is required"],
-  },
+ 
   reciever_name: {
     type: String,
     required: [true, "Please Name is Required!"],

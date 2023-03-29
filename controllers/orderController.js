@@ -4,27 +4,25 @@ const { orderModel } = require("../models/OrderModel");
 const orderCreate = async (req, res) => {
   try {
     const {
-      rider,
-      organization_User,
+      roname,
       reciever_name,
       mobile,
       address,
       nearest_landmark,
       order_details,
       Orderstatus,
-      PaymentStatus
+      PaymentStatus,
     } = req.body;
 
     let data = await orderModel({
-      rider: rider,
-      organization_User: organization_User,
+      roname: roname,
       reciever_name: reciever_name,
       mobile: mobile,
       address: address,
       nearest_landmark: nearest_landmark,
       order_details: order_details,
       Orderstatus: Orderstatus,
-      PaymentStatus: PaymentStatus
+      PaymentStatus: PaymentStatus,
     });
 
     if (!data) {
@@ -38,7 +36,6 @@ const orderCreate = async (req, res) => {
       message: "Your Order has been Completed",
       result: result,
     });
-    
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -49,19 +46,14 @@ const ordersAll = async (req, res) => {
   try {
     const ordersall = await orderModel
       .find({})
-      .populate("organization_User", [
-        "profilePhoto",
+      .populate("roname", [
+        "riderName",
         "organizationName",
         "crNumber",
-        "email",
-        "mobile",
-      ])
-      .populate("rider", [
-        "name",
+        "vehiclenumberplate",
         "email",
         "profilePhoto",
         "mobile",
-        "vehiclenumberplate"
       ]);
 
     if (!ordersall) {
@@ -81,20 +73,15 @@ const orderDetails = async (req, res) => {
     const { id } = req.params;
     const orderDetail = await orderModel
       .findById(id)
-      .populate("organization_User", [
-        "profilePhoto",
+      .populate("roname", [
+        "riderName",
         "organizationName",
         "crNumber",
-        "email",
-        "mobile",
-      ])
-      .populate("rider", [
-        "name",
+        "vehiclenumberplate",
         "email",
         "profilePhoto",
         "mobile",
-        "verified"
-      ])
+      ]);
 
     if (!orderDetail) {
       return res.status(400).send("Something Error");
