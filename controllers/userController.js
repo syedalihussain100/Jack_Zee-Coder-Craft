@@ -325,7 +325,7 @@ const forgetPassword = async (req, res) => {
         subject: "Reset Your Password",
         html:
           "<h3> Hii " +
-          userData.name +
+          userData.email +
           ', Please copy the link and <a href=" ' +
           resetPasswordurl +
           ' ">and reset your password</a></h3>',
