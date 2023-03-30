@@ -1,14 +1,12 @@
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      res.status(403);
-      throw new Error(
-        `Role: ${req.user.role} is not allowed to access this Resources`
-      );
+      return res
+        .status(403)
+        .send(`Role: ${req.user.role} is not allowed to access this Resources`);
     }
     next();
   };
 };
 
-
-module.exports = authorizeRoles
+module.exports = authorizeRoles;

@@ -25,17 +25,18 @@ const orderCreate = async (req, res) => {
       PaymentStatus: PaymentStatus,
     });
 
-    if (!data) {
-      return res.status(200).send("Network Error!");
+    let checkname = await orderModel.findOne({ reciever_name: reciever_name });
+
+    if (checkname) {
+      return res
+        .status(200)
+        .send({ success: false, msg: "This Order is already register" });
+    } else {
+      const mydata = await data.save();
+      res
+        .status(200)
+        .send({ message: "Your Order has been Completed", result: mydata });
     }
-
-    const result = await data.save();
-
-    res.status(200).send({
-      success: true,
-      message: "Your Order has been Completed",
-      result: result,
-    });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -93,33 +94,33 @@ const orderDetails = async (req, res) => {
   }
 };
 
-// order  status 
-const orderStatus = async (req,res) =>{
+// order  status
+const orderStatus = async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
     const newuserData = {
       Orderstatus: req.body.Orderstatus,
     };
-    const orderStatus  = await orderModel.findByIdAndUpdate(id,newuserData,{
+    const orderStatus = await orderModel.findByIdAndUpdate(id, newuserData, {
       new: true,
-      runValidators: true
-    })
+      runValidators: true,
+    });
 
     res.status(200).json({
-      success:true,
+      success: true,
       message: "Your Order Status has been Updated",
-      orderStatus
-    })
+      orderStatus,
+    });
   } catch (error) {
     res.status(500).send(error?.message);
   }
-}
+};
 
 // exports
 module.exports = {
   orderCreate,
   orderDetails,
   ordersAll,
-  orderStatus
+  orderStatus,
 };
