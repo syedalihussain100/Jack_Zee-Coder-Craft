@@ -2,18 +2,16 @@ const jwt = require("jsonwebtoken");
 const { userModel } = require("../models/userModel");
 
 const authMiddleware = async (req, res, next) => {
- 
   let token;
   if (req?.headers?.authorization?.startsWith("Bearer")) {
     try {
-      token = req.headers.authorization.split(" ")[1]
-
+      token = req.headers.authorization.split(" ")[1];
 
       if (token) {
-        const decoded = jwt.verify(token, process.env.JWT)
+        const decoded = jwt.verify(token, process.env.JWT);
         // find the user by id
         const user = await userModel.findById(decoded?.id);
-          console.log(user)
+        console.log(user);
         // attach the user to the request
         req.user = user;
         console.log(req.user._id || "koi issue haai");
@@ -31,4 +29,4 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
-module.exports = authMiddleware;
+module.exports = authMiddleware
