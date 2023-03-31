@@ -1,15 +1,11 @@
 const mongoose = require("mongoose");
 
 const Order = mongoose.Schema({
-  roname:{
-  type:[
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref:"User"
-    },   
-  ]
+  roname: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
- 
+
   reciever_name: {
     type: String,
     required: [true, "Please Name is Required!"],
@@ -40,7 +36,7 @@ const Order = mongoose.Schema({
   },
   PaymentStatus: {
     type: String,
-    default: "Pending"
+    default: "Pending",
   },
 
   Orderstatus: {
