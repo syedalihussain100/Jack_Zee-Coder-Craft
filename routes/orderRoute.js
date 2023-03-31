@@ -9,7 +9,6 @@ const {
   orderStatus,
 } = require("../controllers/orderController");
 const authMiddleware = require("../middleware/Auth");
-const authorizeRoles = require("../middleware/Role")
 
 
 order_Route.use(express.json());
@@ -19,11 +18,10 @@ order_Route.use(bodyParser.urlencoded({ extended: true }));
 order_Route.post(
   `/createOrder`,
   authMiddleware,
-  authorizeRoles("admin"),
   orderCreate
 );
 order_Route.get(`/orderDetails/:id`, authMiddleware, orderDetails);
 order_Route.get(`/orders`, ordersAll);
-order_Route.put(`/orderStatus/:id`, authMiddleware, authorizeRoles("admin"), orderStatus);
+order_Route.put(`/orderStatus/:id`, authMiddleware,  orderStatus);
 
 module.exports = order_Route;
