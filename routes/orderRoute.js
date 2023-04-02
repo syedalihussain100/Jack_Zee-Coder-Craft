@@ -21,7 +21,7 @@ order_Route.post(
   orderCreate
 );
 order_Route.get(`/orderDetails/:id`, authMiddleware, orderDetails);
-order_Route.get(`/orders`, ordersAll);
+order_Route.get(`/orders`, authMiddleware,ordersAll);
 order_Route.put(`/orderStatus/:id`, authMiddleware,  orderStatus);
 
 module.exports = order_Route;

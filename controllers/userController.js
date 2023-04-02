@@ -1,18 +1,11 @@
 const bcrypt = require("bcryptjs");
 const { userModel } = require("../models/userModel");
-// const { config } = require("dotenv");
-// const generateToken = require("../utils/Token");
 const nodemailer = require("nodemailer");
 const randomstring = require("randomstring");
-const jwt = require("jsonwebtoken");
-const { generateOTP } = require("../utils/Mail");
-const { verificationModel } = require("../models/verificationToken");
-const { isValidObjectId } = require("mongoose");
+// const jwt = require("jsonwebtoken");
 const CloudUploadImage = require("../utils/CloudniaryCloud/Cloudinary");
-
 const sendEmail = require("../utils/sendEmail");
-// const crypto = require("crypto");
-
+const { sendToken } = require("../utils/SendToken");
 
 // ottp
 
@@ -97,41 +90,55 @@ const securePassword = async (password) => {
 // register api
 const registerUser = async (req, res) => {
   try {
-    const spassword = await securePassword(req.body.password);
+    const {
+      riderName,
+      organizationName,
+      email,
+      password,
+      mobile,
+      vehiclenumberplate,
+      crNumber,
+    } = req.body;
 
-    const user = new userModel({
-      riderName: req.body.riderName,
-      organizationName:req.body.organizationName,
-      email: req.body.email,
-      password: spassword,
-      mobile: req.body.mobile,
-      vehiclenumberplate: req.body.vehiclenumberplate,
-      crNumber:req.body.crNumber
-    });
+    let user = await userModel.findOne({ email });
 
-    const OTP = generateOTP();
-    const verificationToken = new verificationModel({
-      owner: user._id,
-      token: OTP,
-    });
-
-    const userData = await userModel.findOne({ email: req.body.email });
-
-    if (userData) {
-      res
-        .status(200)
-        .send({ success: false, msg: "This email is already exits" });
-    } else {
-      await verificationToken.save();
-      const userData = await user.save();
-
-      await sendOTTp(userData.email, OTP);
-
-      res.status(200).send({ success: true, data: userData });
+    if (user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
     }
+
+    const otp = Math.floor(Math.random() * 1000000);
+
+    user = await userModel.create({
+      riderName,
+      organizationName,
+      email,
+      password,
+      mobile,
+      vehiclenumberplate,
+      crNumber,
+      otp,
+      otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 1000),
+    });
+
+    await sendOTTp(email, otp);
+
+    sendToken(
+      res,
+      user,
+      201,
+      "OTP sent to your email, please verify your account"
+    );
+
+    // const OTP = generateOTP();
+    // const verificationToken = new verificationModel({
+    //   owner: user._id,
+    //   token: OTP,
+    // });
   } catch (error) {
     console.log(error?.message);
-    res.status(400).send(error?.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -141,41 +148,49 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const userData = await userModel.findOne({ email: email });
-
-    const token = jwt.sign({ id: userData._id }, process.env.JWT, {
-      expiresIn: "1d",
-    });
-
- 
-
-    if (userData) {
-      const passwordMatch = await bcrypt.compare(password, userData?.password);
-
-      if (passwordMatch) {
-        const userResult = {
-          _id: userData._id,
-          name: userData.name,
-          email: userData.email,
-          password: userData.password,
-          token: token,
-        };
-
-        return res
-          .status(200)
-          .send({ msg: "Login Successfully", data: userResult });
-      } else {
-        res
-          .status(400)
-          .send({ success: false, msg: "Login details are incorrect" });
-      }
-    } else {
-      res
+    if (!email || !password) {
+      return res
         .status(400)
-        .send({ success: false, msg: "Login details are incorrect" });
+        .json({ success: false, message: "Please enter all fields" });
     }
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Email or Password" });
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Email or Password" });
+    }
+
+    sendToken(res, user, 200, "Login Successfully");
+
+    // const token = jwt.sign({ id: userData._id }, process.env.JWT, {
+    //   expiresIn: "1d",
+    // });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// logout
+const logout = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .cookie("token", null, {
+        expires: new Date(Date.now()),
+      })
+      .json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -190,7 +205,7 @@ const singleProfile = async (req, res) => {
       res.status(400).send("User Details Not found");
     }
 
-    return res.status(200).send(single_profile);
+    sendToken(res, single_profile, 200, "Single Profile");
   } catch (error) {
     return res.status(400).send(error?.message);
   }
@@ -270,34 +285,63 @@ const AllProfile = async (req, res) => {
 
 const UpdatePassword = async (req, res) => {
   try {
-    const user_id = req.body.user_id;
-    const password = req.body.password;
+    let user = await userModel.findById(req.user._id);
+    const { oldPassword, newPassword } = req.body;
 
-    if (!user_id || !password) {
-      res.status(400).send("All fields are required");
-    } else {
-      const data = await userModel.findOne({ _id: user_id });
-
-      if (data) {
-        const newPassword = await securePassword(password);
-
-        const userData = await userModel.findByIdAndUpdate(
-          { _id: user_id },
-          {
-            $set: { password: newPassword },
-          }
-        );
-
-        res
-          .status(200)
-          .send({ success: true, msg: "Your password has been updated" });
-      } else {
-        res.status(200).send({ success: false, msg: "User Id not found" });
-      }
+    if (!oldPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please enter all fields" });
     }
+
+    const isMatch = await user.comparePassword(oldPassword);
+
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Old Password" });
+    }
+
+    user.password = newPassword;
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password Updated successfully" });
   } catch (error) {
-    res.status(200).send(error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
+  // try {
+  //   let user = await userModel.findById(req.user._id)
+  //   const user_id = req.body.user_id;
+  //   const password = req.body.password;
+
+  //   if (!user_id || !password) {
+  //     res.status(400).send("All fields are required");
+  //   } else {
+  //     const data = await userModel.findOne({ _id: user_id });
+
+  //     if (data) {
+  //       const newPassword = await securePassword(password);
+
+  //       const userData = await userModel.findByIdAndUpdate(
+  //         { _id: user_id },
+  //         {
+  //           $set: { password: newPassword },
+  //         }
+  //       );
+
+  //       res
+  //         .status(200)
+  //         .send({ success: true, msg: "Your password has been updated" });
+  //     } else {
+  //       res.status(200).send({ success: false, msg: "User Id not found" });
+  //     }
+  //   }
+  // } catch (error) {
+  //   res.status(200).send(error.message);
+  // }
 };
 
 // forget password
@@ -348,13 +392,13 @@ const resetPassword = async (req, res) => {
   try {
     const token = req.query.token;
 
-    const tokenData = await userModel.findOne({ token: token });
-
-    if (tokenData) {
+    let user = await userModel.findOne({ token: token });
+    const password = req.body.password;
+    const newPassword = await securePassword(password);
+    if (user) {
       const password = req.body.password;
-      const newPassword = await securePassword(password);
-      const userData = await userModel.findByIdAndUpdate(
-        { _id: tokenData._id },
+      user = await userModel.findByIdAndUpdate(
+        { _id: user._id },
         { $set: { password: newPassword, token: "" } },
         { new: true }
       );
@@ -362,7 +406,7 @@ const resetPassword = async (req, res) => {
       res.status(200).send({
         success: true,
         msg: "User Password has been reset",
-        data: userData,
+        data: user,
       });
     } else {
       res
@@ -374,61 +418,81 @@ const resetPassword = async (req, res) => {
   }
 };
 
-
-
 // Verify Email
 
-const VerifyEmail = async (req, res) => {
+// const VerifyEmail = async (req, res) => {
+//   try {
+//     const { userId, otp } = req.body;
+//     if (!userId || !otp.trim()) {
+//       return res.status(400).send("Invalid request, missing parameters!");
+//     }
+
+//     if (!isValidObjectId(userId)) {
+//       return res.status(400).send("Invalid user id");
+//     }
+
+//     const user = await userModel.findById(userId);
+
+//     if (!user) {
+//       return res.status(400).send("Sorry, user not found!");
+//     }
+
+//     if (user.verified) {
+//       return res.status(400).send("This account is already verified!");
+//     }
+
+//     const token = await verificationModel.findOne({ owner: user._id });
+
+//     if (!token) {
+//       return res.status(400).send("Sorry, user not found!");
+//     }
+
+//     const isMatched = await token.compareToken(otp);
+
+//     if (!isMatched) {
+//       return res.status(400).send("Please Provide a Valid Token!");
+//     }
+
+//     user.verified = true;
+
+//     await verificationModel.findByIdAndDelete(token._id);
+
+//     await user.save();
+
+//     await verifiedEmail(user.email);
+
+//     res
+//       .status(200)
+//       .send({ success: true, message: "Your Email is Verified", data: user });
+//   } catch (error) {
+//     res.status(400).send(error.message);
+//   }
+// };
+
+const verify = async (req, res) => {
   try {
-    const { userId, otp } = req.body;
-    if (!userId || !otp.trim()) {
-      return res.status(400).send("Invalid request, missing parameters!");
-    }
+    const otp = Number(req.body.otp);
 
-    if (!isValidObjectId(userId)) {
-      return res.status(400).send("Invalid user id");
-    }
+    const user = await userModel.findById(req.user._id);
 
-    const user = await userModel.findById(userId);
-
-    if (!user) {
-      return res.status(400).send("Sorry, user not found!");
-    }
-
-    if (user.verified) {
-      return res.status(400).send("This account is already verified!");
-    }
-
-    const token = await verificationModel.findOne({ owner: user._id });
-
-    if (!token) {
-      return res.status(400).send("Sorry, user not found!");
-    }
-
-    const isMatched = await token.compareToken(otp);
-
-    if (!isMatched) {
-      return res.status(400).send("Please Provide a Valid Token!");
+    if (user.otp !== otp || user.otp_expiry < Date.now()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid OTP or has been Expired!" });
     }
 
     user.verified = true;
-
-    await verificationModel.findByIdAndDelete(token._id);
+    user.otp = null;
+    user.otp_expiry = null;
 
     await user.save();
-
     await verifiedEmail(user.email);
 
-    res
-      .status(200)
-      .send({ success: true, message: "Your Email is Verified", data: user });
+    res.status(200).json({ success: true, message: "Your Account Verified!" });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(500).json({ success: false, message: error?.message });
   }
 };
-
-
-
 
 module.exports = {
   registerUser,
@@ -439,6 +503,8 @@ module.exports = {
   forgetPassword,
   resetPassword,
   profileUpdate,
-  VerifyEmail,
+  // VerifyEmail,
+  verify,
+  logout,
   uploadProfileImage,
 };

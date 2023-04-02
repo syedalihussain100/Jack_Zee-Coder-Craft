@@ -27,6 +27,7 @@ user_Route.put(
   userController.uploadProfileImage
 );
 user_Route.get(`/users/profile`, Authmiddleware, userController.AllProfile);
+user_Route.get(`/logout`, userController.logout);
 
 user_Route.post(
   `/update-password`,
@@ -36,7 +37,7 @@ user_Route.post(
 
 user_Route.post(`/forget-password`, userController.forgetPassword);
 // user_Route.post(`/logout`, Authmiddleware, userController.signOut);
-user_Route.post(`/verify-email`, userController.VerifyEmail);
+user_Route.post(`/verify-email`, Authmiddleware,userController.verify);
 
 user_Route.put(`/reset-password`, userController.resetPassword);
 
