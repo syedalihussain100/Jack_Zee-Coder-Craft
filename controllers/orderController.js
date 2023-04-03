@@ -55,6 +55,7 @@ const ordersAll = async (req, res) => {
         "email",
         "profilePhoto",
         "mobile",
+        "verified"
       ]);
 
     if (!ordersall) {
