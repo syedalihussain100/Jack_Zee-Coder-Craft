@@ -83,6 +83,7 @@ const orderDetails = async (req, res) => {
         "email",
         "profilePhoto",
         "mobile",
+        "verified"
       ]);
 
     if (!orderDetail) {
@@ -94,6 +95,9 @@ const orderDetails = async (req, res) => {
     res.status(500).send(error?.message);
   }
 };
+
+
+
 
 // order  status
 const orderStatus = async (req, res) => {
@@ -117,6 +121,9 @@ const orderStatus = async (req, res) => {
     res.status(500).send(error?.message);
   }
 };
+
+
+
 
 // exports
 module.exports = {
