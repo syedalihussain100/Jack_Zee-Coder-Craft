@@ -360,11 +360,11 @@ const forgetPassword = async (req, res) => {
         { $set: { token: randomString } }
       );
 
-      // const resetPasswordurl = `${req.protocol}://${req.get(
-      //   "host"
-      // )}/reset-password?token=${randomString}`;
+      const resetPasswordurl = `${req.protocol}://${req.get(
+        "host"
+      )}/reset-password?token=${randomString}`;
 
-      const resetPasswordurl = `http://localhost:3000/reset-password?token=${randomString}`;
+      // const resetPasswordurl = `http://localhost:3000/reset-password?token=${randomString}`;
 
       await sendEmail({
         email: userData.email,
@@ -379,7 +379,7 @@ const forgetPassword = async (req, res) => {
 
       res
         .status(200)
-        .send({ success: true, msg: "Please check your inbox of mail" });
+        .send({ success: true, msg: "Please check your inbox of mail"});
     } else {
       res.status(400).send({ success: true, msg: "This email does not exits" });
     }
