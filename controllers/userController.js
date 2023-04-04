@@ -98,6 +98,7 @@ const registerUser = async (req, res) => {
       mobile,
       vehiclenumberplate,
       crNumber,
+      category
     } = req.body;
 
     let user = await userModel.findOne({ email });
@@ -118,6 +119,7 @@ const registerUser = async (req, res) => {
       mobile,
       vehiclenumberplate,
       crNumber,
+      category,
       otp,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 1000),
     });
