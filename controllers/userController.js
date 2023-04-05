@@ -7,6 +7,7 @@ const CloudUploadImage = require("../utils/CloudniaryCloud/Cloudinary");
 const sendEmail = require("../utils/sendEmail");
 const { sendToken } = require("../utils/SendToken");
 
+
 // ottp
 
 const sendOTTp = async (email, ottp) => {
@@ -364,7 +365,7 @@ const forgetPassword = async (req, res) => {
         "host"
       )}/reset-password?token=${randomString}`;
 
-      // const resetPasswordurl = `http://localhost:3000/reset-password?token=${randomString}`;
+      
 
       await sendEmail({
         email: userData.email,
