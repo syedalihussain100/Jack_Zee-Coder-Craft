@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cloudniary = require("cloudinary");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 
 // middleware
@@ -34,6 +35,13 @@ const order_Route = require("./routes/orderRoute");
 
 app.use(`/api`, user_Route);
 app.use(`/api`,order_Route);
+
+
+app.use(express.static(path.join(__dirname,"../frontend/build")))
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+});
 
 
 app.get(`/`,(req,res)=>{
