@@ -37,7 +37,7 @@ user_Route.post(
 
 user_Route.post(`/forget-password`, userController.forgetPassword);
 // user_Route.post(`/logout`, Authmiddleware, userController.signOut);
-user_Route.post(`/verify-email`, Authmiddleware,userController.verify);
+user_Route.post(`/verify-email`, userController.VerifyEmail);
 
 user_Route.put(`/reset-password`, userController.resetPassword);
 
