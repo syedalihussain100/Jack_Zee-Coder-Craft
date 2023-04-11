@@ -8,6 +8,7 @@ const sendEmail = require("../utils/sendEmail");
 const { sendToken } = require("../utils/SendToken");
 const { verificationModel } = require("../models/verificationToken");
 const { isValidObjectId } = require("mongoose");
+const { generateOTP } = require("../middleware/Otp");
 
 
 // ottp
@@ -112,7 +113,7 @@ const registerUser = async (req, res) => {
         .json({ success: false, message: "User already exists" });
     }
 
-    const otp = Math.floor(Math.random() * 1000000);
+    
 
     user = await userModel.create({
       riderName,
@@ -126,15 +127,14 @@ const registerUser = async (req, res) => {
       // otp,
       // otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 1000),
     });
-
-  
+const OTP = generateOTP();
     const verificationToken = new verificationModel({
       owner: user._id,
-      token: otp,
+      token: OTP
     });
 
     await verificationToken.save();
-    await sendOTTp(email, otp);
+    await sendOTTp(email, OTP);
 
 
     sendToken(
@@ -430,7 +430,7 @@ const resetPassword = async (req, res) => {
 const VerifyEmail = async (req, res) => {
   try {
     const { userId, otp } = req.body;
-    
+
     if (!userId || !otp.trim()) {
       return res.status(400).send("Invalid request, missing parameters!");
     }
