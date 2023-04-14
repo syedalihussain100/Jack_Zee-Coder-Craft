@@ -27,7 +27,7 @@ user_Route.put(
   userController.uploadProfileImage
 );
 user_Route.get(`/users/profile`, Authmiddleware, userController.AllProfile);
-user_Route.get(`/logout`, userController.logout);
+// user_Route.get(`/logout`, userController.logout);
 
 user_Route.post(
   `/update-password`,

@@ -188,18 +188,18 @@ const loginUser = async (req, res) => {
 };
 
 // logout
-const logout = async (req, res) => {
-  try {
-    res
-      .status(200)
-      .cookie("token", null, {
-        expires: new Date(Date.now()),
-      })
-      .json({ success: true, message: "Logged out successfully" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+// const logout = async (req, res) => {
+//   try {
+//     res
+//       .status(200)
+//       .cookie("token", null, {
+//         expires: new Date(Date.now()),
+//       })
+//       .json({ success: true, message: "Logged out successfully" });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
 
 // single profile
 
@@ -441,9 +441,9 @@ const VerifyEmail = async (req, res) => {
 
     const user = await userModel.findById(userId);
 
-    // if (!user) {
-    //   return res.status(400).send("Sorry, user not found!");
-    // }
+    if (!user) {
+      return res.status(400).send("Sorry, user not found!");
+    }
 
     if (user.verified) {
       return res.status(400).send("This account is already verified!");
@@ -513,6 +513,6 @@ module.exports = {
   profileUpdate,
   VerifyEmail,
   // verify,
-  logout,
+  // logout,
   uploadProfileImage,
 };

@@ -11,11 +11,11 @@ const verificationTokenSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    expires: '2m',
-    default: Date.now(),
-  },
+  // createdAt: {
+  //   type: Date,
+  //   expires: '2m',
+  //   default: Date.now(),
+  // },
 });
 
 verificationTokenSchema.pre("save", async function (next) {
