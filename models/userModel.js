@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-const user = mongoose.Schema({
+const user = new mongoose.Schema({
   riderName: {
     type: String,
     trim: true,
@@ -55,10 +55,14 @@ const user = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  balance: {
+    type: Number,
+    default: 0,
+  },
   category: {
     type: String,
     required: true,
-    default:"gifts"
+    default: "gifts",
   },
 
   createdAt: {

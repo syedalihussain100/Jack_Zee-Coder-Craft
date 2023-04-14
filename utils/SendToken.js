@@ -15,6 +15,7 @@
     password: user.password,
     mobile: user.mobile,
     verified: user.verified,
+    balance: user.balance,
     riderName: user.riderName,
     organizationName: user.organizationName,
     crNumber: user.crNumber,

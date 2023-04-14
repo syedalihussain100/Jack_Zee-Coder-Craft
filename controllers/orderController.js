@@ -1,90 +1,76 @@
 const { orderModel } = require("../models/OrderModel");
 
-// create Order
+// create order
+
 const orderCreate = async (req, res) => {
   try {
-    const {
-      roname,
-      reciever_name,
-      mobile,
-      address,
-      nearest_landmark,
-      order_details,
-      Orderstatus,
-      PaymentStatus,
-    } = req.body;
-
-    let data = await orderModel({
-      roname: roname,
-      reciever_name: reciever_name,
-      mobile: mobile,
-      address: address,
-      nearest_landmark: nearest_landmark,
-      order_details: order_details,
-      Orderstatus: Orderstatus,
-      PaymentStatus: PaymentStatus,
-    });
-
-    let checkname = await orderModel.findOne({ reciever_name: reciever_name });
-
-    if (checkname) {
-      return res
-        .status(200)
-        .send({ success: false, msg: "This Order is already register" });
-    } else {
-      const mydata = await data.save();
+    if (
+      !req.body.rider ||
+      !req.body.address ||
+      !req.body.nearest_landmark ||
+      !req.body.reciever_name ||
+      !req.body.mobile ||
+      !req.body.order_details ||
+      !req.body.latitude ||
+      !req.body.longitude
+    ) {
       res
         .status(200)
-        .send({ message: "Your Order has been Completed", result: mydata });
+        .send({ success: false, msg: "All fields are required!" });
+    } else {
+      const store = new orderModel({
+        rider: req.body.rider,
+        address: req.body.address,
+        nearest_landmark: req.body.nearest_landmark,
+        reciever_name: req.body.reciever_name,
+        mobile: req.body.mobile,
+        order_details: req.body.order_details,
+        PaymentStatus: req.body.PaymentStatus,
+        location: {
+          type: "Point",
+          coordinates: [
+            parseFloat(req.body.longitude),
+            parseFloat(req.body.latitude),
+          ],
+        },
+      });
+
+      const storeData = await store.save();
+      res
+        .status(200)
+        .send({ success: true, msg: "Order is Created.", data: storeData });
     }
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(400).send(error.message);
   }
 };
 
-// find all orders
-const ordersAll = async (req, res) => {
+// get order
+const orderGet = async (req, res) => {
   try {
-    const ordersall = await orderModel
-      .find({})
-      .populate("roname", [
-        "riderName",
-        "organizationName",
-        "crNumber",
-        "vehiclenumberplate",
-        "email",
-        "profilePhoto",
-        "mobile",
-        "verified"
-      ]);
+    const stores = await orderModel.find().populate("rider",["-password","-token"]);
 
-    if (!ordersall) {
-      return res.status(400).send("Something Error");
-    }
-
-    res.status(200).send(ordersall);
+    return res.status(200).json({
+      success: true,
+      count: stores.length,
+      data: stores,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.log(error);
+    res.status(500).json({ error: error?.message });
   }
 };
 
-// find details order
+
+
+// // find details order
 
 const orderDetails = async (req, res) => {
   try {
     const { id } = req.params;
     const orderDetail = await orderModel
       .findById(id)
-      .populate("roname", [
-        "riderName",
-        "organizationName",
-        "crNumber",
-        "vehiclenumberplate",
-        "email",
-        "profilePhoto",
-        "mobile",
-        "verified"
-      ]);
+      .populate("rider",["-password","-token"]);
 
     if (!orderDetail) {
       return res.status(400).send("Something Error");
@@ -96,10 +82,7 @@ const orderDetails = async (req, res) => {
   }
 };
 
-
-
-
-// order  status
+// // update order  status
 const orderStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -122,13 +105,4 @@ const orderStatus = async (req, res) => {
   }
 };
 
-
-
-
-// exports
-module.exports = {
-  orderCreate,
-  orderDetails,
-  ordersAll,
-  orderStatus,
-};
+module.exports = { orderCreate, orderGet,orderDetails,orderStatus };

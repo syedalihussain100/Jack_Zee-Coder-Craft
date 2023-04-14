@@ -1,9 +1,27 @@
 const mongoose = require("mongoose");
+// const geocoder = require("../utils/geocoder");
 
 const Order = mongoose.Schema({
-  roname: {
+  rider: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+
+  address: {
+    type: String,
+    required: [true, "Please Address is Required!"],
+    trim: true,
+  },
+
+  location: {
+    type: { type: String, required: true },
+    coordinates: [],
+  },
+
+  nearest_landmark: {
+    type: String,
+    required: [true, "Please Nearest Landmark is Required!"],
+    trim: true,
   },
 
   reciever_name: {
@@ -15,17 +33,6 @@ const Order = mongoose.Schema({
   mobile: {
     type: String,
     required: [true, "Please Mobile Number is Required!"],
-    trim: true,
-  },
-
-  address: {
-    type: String,
-    required: [true, "Please Address is Required!"],
-    trim: true,
-  },
-  nearest_landmark: {
-    type: String,
-    required: [true, "Please Nearest Landmark is Required!"],
     trim: true,
   },
 
@@ -48,6 +55,24 @@ const Order = mongoose.Schema({
     default: Date.now,
   },
 });
+
+Order.index({location:"2dsphere"});
+
+// // geocoder create location
+// Order.pre("save", async function (next) {
+//   const loc = await geocoder.geocode({
+//     address: this.address,
+//     countryCode: "BH",
+//   });
+//   console.log(loc);
+//   this.location = {
+//     type: "Point",
+//     coordinates: [loc[0].longitude, loc[0].latitude],
+//     formattedAddress: loc[0].formattedAddress,
+//   };
+
+//   next();
+// });
 
 const orderModel = mongoose.model("Order", Order);
 

@@ -32,9 +32,11 @@ cloudniary.v2.config({
 
 const user_Route = require("./routes/userRoute");
 const order_Route = require("./routes/orderRoute");
+const wallet_Route = require("./routes/walletRoute");
 
 app.use(`/api`, user_Route);
 app.use(`/api`,order_Route);
+app.use(`/api`,wallet_Route);
 
 
 app.use(express.static(path.join(__dirname,"./client/build")))
