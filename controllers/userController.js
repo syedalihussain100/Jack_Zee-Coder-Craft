@@ -477,30 +477,11 @@ const VerifyEmail = async (req, res) => {
   }
 };
 
-// const verify = async (req, res) => {
-//   try {
-//     const otp = Number(req.body.otp);
 
-//     const user = await userModel.findById(req.user._id);
+// create some data  heree
 
-//     if (user.otp !== otp || user.otp_expiry < Date.now()) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Invalid OTP or has been Expired!" });
-//     }
 
-//     user.verified = true;
-//     user.otp = null;
-//     user.otp_expiry = null;
 
-//     await user.save();
-//     await verifiedEmail(user.email);
-
-//     res.status(200).json({ success: true, message: "Your Account Verified!" });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error?.message });
-//   }
-// };
 
 module.exports = {
   registerUser,

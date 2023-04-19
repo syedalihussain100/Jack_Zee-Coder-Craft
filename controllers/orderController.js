@@ -17,7 +17,6 @@ const orderCreate = async (req, res) => {
     ) {
       res.status(200).send({ success: false, msg: "All fields are required!" });
     } else {
-
       const store = new orderModel({
         rider: req.body.rider,
         address: req.body.address,
@@ -140,16 +139,21 @@ const orderGet = async (req, res) => {
 
 const orderDetails = async (req, res) => {
   try {
-    const { id } = req.params;
-    const orderDetail = await orderModel
-      .findById(id)
+    // const { id } = req.params;
+    // const orderDetail = await orderModel
+    //   .findById(id)
+    //   .populate("rider", ["-password", "-token"]);
+    const { reciever_name } = req.body;
+
+    const finedata = await orderModel
+      .findOne({ reciever_name })
       .populate("rider", ["-password", "-token"]);
 
-    if (!orderDetail) {
+    if (!finedata) {
       return res.status(400).send("Something Error");
     }
 
-    res.status(200).send(orderDetail);
+    res.status(200).send(finedata);
   } catch (error) {
     res.status(500).send(error?.message);
   }
@@ -177,7 +181,7 @@ const orderStatus = async (req, res) => {
   }
 };
 
-module.exports = { orderCreate, orderGet, orderDetails,orderStatus };
+module.exports = { orderCreate, orderGet, orderDetails, orderStatus };
 
 // location: {
 //   type: "Point",
