@@ -29,6 +29,7 @@
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.21",
     "randomstring": "^1.2.3",
-    "sharp": "^0.31.3"
+    "sharp": "^0.31.3",
+    "stripe": "^12.2.0"
   }
 }
