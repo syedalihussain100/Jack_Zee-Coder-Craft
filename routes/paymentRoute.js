@@ -7,6 +7,8 @@ const router = Router();
 
 router.route(`/payment/process`).post(authMiddleware,processPayment);
 router.route(`/stripeapikey`).get(authMiddleware,sendStripeApiKey);
+// router.route(`/stripe/totals`).get(getTotalAmountByUser)
+// router.route(`/create-payment-intent`).post(authMiddleware,createStripe);
 
 
 
