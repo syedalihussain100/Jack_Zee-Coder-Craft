@@ -24,42 +24,42 @@ exports.sendStripeApiKey = async (req, res, next) => {
 
 
 
-//   exports.getTotalAmountByUser = async (req, res, next) => {
-//     try {
-//       const paymentIntents = await stripe.paymentIntents.list({ limit: 100 });
+  // exports.getTotalAmountByUser = async (req, res, next) => {
+  //   try {
+  //     const paymentIntents = await stripe.paymentIntents.list({ limit: 100 });
 
-//       console.log("paymentIntents.data",paymentIntents.data); // log the payment intents to the console
+  //     console.log("paymentIntents.data",paymentIntents.data); // log the payment intents to the console
   
-//       const userTotals = {};
+  //     const userTotals = {};
   
-//       paymentIntents.data.forEach((paymentIntent) => {
-//         if (paymentIntent.metadata && paymentIntent.metadata.userId) {
-//           const userId = paymentIntent.metadata.userId;
-//           console.log(userId)
-//           if (!userTotals[userId]) {
-//             userTotals[userId] = 0;
-//           }
-//           userTotals[userId] += paymentIntent.amount;
-//         }
-//       });
+  //     paymentIntents.data.forEach((paymentIntent) => {
+  //       if (paymentIntent.metadata && paymentIntent.metadata.userId) {
+  //         const userId = paymentIntent.metadata.userId;
+  //         console.log(userId)
+  //         if (!userTotals[userId]) {
+  //           userTotals[userId] = 0;
+  //         }
+  //         userTotals[userId] += paymentIntent.amount;
+  //       }
+  //     });
 
 
-//       // paymentIntents.data.forEach((paymentIntent) => {
-//       //   if (paymentIntent.metadata && paymentIntent.metadata.userId) {
-//       //     console.log(`Payment intent with ID ${paymentIntent.id} has metadata containing userId ${paymentIntent.metadata.userId}`);
-//       //   }
-//       // });
+  //     // paymentIntents.data.forEach((paymentIntent) => {
+  //     //   if (paymentIntent.metadata && paymentIntent.metadata.userId) {
+  //     //     console.log(`Payment intent with ID ${paymentIntent.id} has metadata containing userId ${paymentIntent.metadata.userId}`);
+  //     //   }
+  //     // });
   
-//       if (Object.keys(userTotals).length === 0) {
-//         return res.status(404).json({ message: "No payment intents found with user data" });
-//       }
+  //     if (Object.keys(userTotals).length === 0) {
+  //       return res.status(404).json({ message: "No payment intents found with user data" });
+  //     }
   
-//       res.status(200).json(userTotals);
-//     } catch (error) {
-//       console.log(error);
-//       res.status(500).json({ error: "Failed to retrieve user totals from Stripe." });
-//     }
-//   };
+  //     res.status(200).json(userTotals);
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json({ error: "Failed to retrieve user totals from Stripe." });
+  //   }
+  // };
 
 
 // This is your test secret API key.

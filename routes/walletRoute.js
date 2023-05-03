@@ -9,6 +9,7 @@ wallet_Route.use(bodyParser.urlencoded({ extended: true }));
 
 wallet_Route.put(`/balance`, authMiddleware, walletController.wallet);
 wallet_Route.get(`/total`, authMiddleware, walletController.walletUser);
+wallet_Route.delete(`/delete`, authMiddleware, walletController.removeWallet);
 
 
 
