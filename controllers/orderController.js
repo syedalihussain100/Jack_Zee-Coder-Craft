@@ -22,6 +22,7 @@ const orderCreate = async (req, res) => {
         address: req.body.address,
         nearest_landmark: req.body.nearest_landmark,
         reciever_name: req.body.reciever_name,
+        ammount:req.body.ammount,
         mobile: req.body.mobile,
         order_details: req.body.order_details,
         PaymentStatus: req.body.PaymentStatus,

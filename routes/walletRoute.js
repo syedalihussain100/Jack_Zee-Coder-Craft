@@ -14,3 +14,26 @@ wallet_Route.delete(`/delete`, authMiddleware, walletController.removeWallet);
 
 
 module.exports = wallet_Route;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
