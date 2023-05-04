@@ -1,5 +1,4 @@
 const { orderModel } = require("../models/OrderModel");
-const { userModel } = require("../models/userModel");
 
 // create order
 
@@ -56,69 +55,7 @@ const orderCreate = async (req, res) => {
   }
 };
 
-// const orderCreate = async (req, res) => {
-//   const orderData = req.body;
 
-//   if (
-//     !orderData ||
-//     !orderData.id ||
-//     !orderData.rider ||
-//     !orderData.address ||
-//     !orderData.nearest_landmark ||
-//     !orderData.reciever_name ||
-//     !orderData.mobile ||
-//     !orderData.order_details ||
-//     !orderData.PaymentStatus
-//   ) {
-//     return res.status(400).send("Invalid order data");
-//   }
-//   try {
-//     let order = await orderModel.findOne({ id: orderData.id });
-
-//     if (!order) {
-//       order = new orderModel({
-//         id: orderData.id,
-//         orders: [
-//           {
-//             rider: orderData.rider,
-//             address: orderData.address,
-//             location: {
-//               type: "Point",
-//               coordinates: [
-//                 parseFloat(req.body.longitude),
-//                 parseFloat(req.body.latitude),
-//               ],
-//             },
-//             nearest_landmark: orderData.nearest_landmark,
-//             reciever_name: orderData.reciever_name,
-//             mobile: orderData.mobile,
-//             order_details: orderData.order_details,
-//             PaymentStatus: orderData.PaymentStatus,
-//           },
-//         ],
-//       });
-//     } else {
-//       order.orders.push({
-//         rider: orderData.rider,
-//         address: orderData.address,
-//         price: orderData.price,
-//         longitude: req.body.longitude,
-//         latitude: req.body.latitude,
-//         nearest_landmark: orderData.nearest_landmark,
-//         reciever_name: orderData.reciever_name,
-//         mobile: orderData.mobile,
-//         order_details: orderData.order_details,
-//         PaymentStatus: orderData.PaymentStatus,
-//       });
-//     }
-
-//     await order.save();
-
-//     res.status(201).send("Order created/updated successfully");
-//   } catch (error) {
-//     res.status(500).json({ error: error?.message });
-//   }
-// };
 
 // get order
 const orderGet = async (req, res) => {
