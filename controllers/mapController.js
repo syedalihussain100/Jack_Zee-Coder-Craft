@@ -18,18 +18,24 @@ const mapLocation = async (req, res) => {
     const dropoffLocation = dropoffResponse.data.results[0].geometry.location;
 
     // Store the pickup and dropoff locations in the database
-    await Location.create({
+    let pickup = await Location.create({
       name: "pickup",
       latitude: pickupLocation.lat,
       longitude: pickupLocation.lng,
     });
-    await Location.create({
+    let dropoff = await Location.create({
       name: "dropoff",
       latitude: dropoffLocation.lat,
       longitude: dropoffLocation.lng,
     });
 
-    res.status(200).send("Locations stored in the database");
+    res
+      .status(200)
+      .send({
+        message: "Locations stored in the database",
+        pickup: pickup,
+        dropoff: dropoff,
+      });
   } catch (error) {
     res.status(500).send(error?.message);
   }
