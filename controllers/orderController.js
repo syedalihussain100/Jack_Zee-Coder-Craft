@@ -9,6 +9,7 @@ const orderCreate = async (req, res) => {
       !req.body.address ||
       !req.body.nearest_landmark ||
       !req.body.reciever_name ||
+      !req.body.ammount ||
       !req.body.mobile ||
       !req.body.order_details ||
       !req.body.latitude ||

@@ -50,6 +50,7 @@ const Order = new mongoose.Schema({
   },
   ammount:{
     type:Number,
+    required: [true, "Please Ammount Number is Required!"],
     default:0
   },
 
